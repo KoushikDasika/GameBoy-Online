@@ -481,6 +481,7 @@ function refreshStorageListing() {
 	storageListMasterDiv.appendChild(storageListMasterDivSub);
 	var linkToManipulate = document.getElementById("download_local_storage_dba");
 	linkToManipulate.href = "data:application/octet-stream;base64," + base64(generateMultiBlob(blobPairs));
+	linkToManipulate.download = "gameboy_color_saves.export";
 }
 function getBlobPreEncoded(keyName) {
 	if (keyName.substring(0, 9) == "B64_SRAM_") {
