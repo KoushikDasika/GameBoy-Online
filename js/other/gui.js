@@ -441,8 +441,8 @@ function deleteValue(key) {
 		window.globalStorage[location.hostname].removeItem(key);
 	}
 }
-function outputLocalStorageLink(keyName, dataFound) {
-	return generateLink("data:application/octet-stream;base64," + dataFound, keyName);
+function outputLocalStorageLink(keyName, dataFound, downloadName) {
+	return generateDownloadLink("data:application/octet-stream;base64," + dataFound, keyName, downloadName);
 }
 function refreshFreezeListing() {
 	var storageListMasterDivSub = document.getElementById("freezeListingMasterContainerSub");
@@ -512,19 +512,19 @@ function popupStorageDialog(keyName) {
 	if (keyName.substring(0, 9) == "B64_SRAM_") {
 		var downloadDiv2 = document.createElement("div");
 		downloadDiv2.id = "storagePopupDownloadRAW";
-		downloadDiv2.appendChild(outputLocalStorageLink("Download RAW save data.", findValue(keyName)));
+		downloadDiv2.appendChild(outputLocalStorageLink("Download RAW save data.", findValue(keyName), keyName));
 		subContainer.appendChild(downloadDiv2);
-		downloadDiv.appendChild(outputLocalStorageLink("Download in import compatible format.", base64(generateBlob(keyName.substring(4), base64_decode(findValue(keyName))))));
+		downloadDiv.appendChild(outputLocalStorageLink("Download in import compatible format.", base64(generateBlob(keyName.substring(4), base64_decode(findValue(keyName)))), keyName));
 	}
 	else if (keyName.substring(0, 5) == "SRAM_") {
 		var downloadDiv2 = document.createElement("div");
 		downloadDiv2.id = "storagePopupDownloadRAW";
-		downloadDiv2.appendChild(outputLocalStorageLink("Download RAW save data.", base64(convertToBinary(findValue(keyName)))));
+		downloadDiv2.appendChild(outputLocalStorageLink("Download RAW save data.", base64(convertToBinary(findValue(keyName))), keyName));
 		subContainer.appendChild(downloadDiv2);
-		downloadDiv.appendChild(outputLocalStorageLink("Download in import compatible format.", base64(generateBlob(keyName, convertToBinary(findValue(keyName))))));
+		downloadDiv.appendChild(outputLocalStorageLink("Download in import compatible format.", base64(generateBlob(keyName, convertToBinary(findValue(keyName)))), keyName));
 	}
 	else {
-		downloadDiv.appendChild(outputLocalStorageLink("Download in import compatible format.", base64(generateBlob(keyName, JSON.stringify(findValue(keyName))))));
+		downloadDiv.appendChild(outputLocalStorageLink("Download in import compatible format.", base64(generateBlob(keyName, JSON.stringify(findValue(keyName)))), keyName));
 	}
 	var deleteLink = generateLink("javascript:deleteStorageSlot(\"" + keyName + "\")", "Delete data item from HTML5 local storage.");
 	deleteLink.id = "storagePopupDelete";
@@ -549,6 +549,11 @@ function generateLink(address, textData) {
 	var link = document.createElement("a");
 	link.href = address;
 	link.appendChild(document.createTextNode(textData));
+	return link;
+}
+function generateDownloadLink(address, textData, keyName) {
+	var link = generateLink(address, textData);
+	link.download = keyName + ".sav";
 	return link;
 }
 function checkStorageLength() {
